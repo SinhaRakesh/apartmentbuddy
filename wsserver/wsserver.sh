@@ -1,0 +1,1 @@
+nohup php index.php >/dev/null 2>&1 &
