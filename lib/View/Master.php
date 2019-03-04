@@ -38,6 +38,7 @@ class View_Master extends \View{
 		$complain_department_tab = $tabs->addTab('Complain Department');
 		$expenses_category = $tabs->addTab('Expenses Category');
 		$staff_type = $tabs->addTab('Staff Type');
+		$apartment_admin = $tabs->addTab('Apartment Admin');
 
 
 		// flat size
@@ -127,5 +128,38 @@ class View_Master extends \View{
 			$form_stype->js(null,$form_stype->js()->reload())->univ()->successMessage('saved successfully ')->execute();
 		}
 
+
+		// apartment admins
+		$member_model = $this->add('rakesh\apartment\Model_Member')
+			->addCondition('apartment_id',$this->app->apartment->id);
+		$form_admin = $apartment_admin->add('Form');
+		$field = $form_admin->addField('DropDown','member');
+		$field->setEmptyText("Please Select");
+		$field->setModel($member_model);
+		$field->validate('required');
+		$form_admin->addSubmit();
+
+		$model_admin = $this->add('rakesh\apartment\Model_Member')
+			->addCondition('is_apartment_admin',true)
+			->addCondition('apartment_id',$this->app->apartment->id);
+
+		$grid = $apartment_admin->add('Grid');
+		$grid->setModel($model_admin,['user','first_name','last_name','flat_name']);
+
+		if($form_admin->isSubmitted()){
+			if(!$form_admin['member']) $form_admin->displayError('member','please select member')->execute();
+
+			$m = $this->add('rakesh\apartment\Model_Member');
+			$m->addCondition('apartment_id',$this->app->apartment->id)
+				->addCondition('id',$form_admin['member'])
+				->tryLoadAny();
+				
+			if($m->loaded()){
+				$m['is_apartment_admin'] = true;
+				$m->save();
+			}
+
+			$form_admin->js(null,[$form_admin->js()->reload(),$grid->js()->reload()])->univ()->successMessage('updated successfully')->execute();
+		}
 	}
 }

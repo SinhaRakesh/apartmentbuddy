@@ -203,7 +203,8 @@ class View_ChatPanel extends \View{
 
 		$wshost = $this->app->getConfig('ap-websocket-server');
 		$uu_id = $this->app->apartmentmember->getUUID();
-		$this->js(true)->_load('apwsclient')->eapartment_chatpanel(
+		$apwsclient = $this->js(true)->_load('apwsclient');
+		$apwsclient->eapartment_chatpanel(
 				[
 					'connected'=>true,
 					'username'=>$this->app->apartmentmember['name'],
@@ -211,6 +212,8 @@ class View_ChatPanel extends \View{
 					'uu_id'=>$uu_id,
 					'chat_with'=>$this->contact_to_id
 				]);
+		// $apwsclient->univ()->runWebSocketClient($wshost,$uu_id,['name'=>$this->app->apartmentmember['name']]);
+
 		$this->js(true)->univ()->chatScrollToTop();
 		parent::recursiveRender();
 	}

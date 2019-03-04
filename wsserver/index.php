@@ -6,7 +6,7 @@ include '../config-default.php';
 	
 	$clients=[];
 
-	// ssl websocket notification
+	//ssl websocket notification
 	if(isset($config['ap-ssl-websocket-notifications']) && $config['ap-ssl-websocket-notifications']){
 		$Context = \Hoa\Stream\Context::getInstance('APAPP');
 		$Context->setOptions([
